@@ -5,7 +5,7 @@ library(ggthemes)
 student_ratio <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-05-07/student_teacher_ratio.csv") %>%
   mutate_if(is.character, as.factor) %>%# converting characters to factors
   filter(grepl('income', country)) %>% # selecting only those observations that include "income"
-  filter(year == c(min(year), max(year))) %>% # selecting the highest and lowest years to use as endpoints of dumbbell plot
+  filter(year %in% c(2017, 2012)) %>% # selecting the highest and lowest years to use as endpoints of dumbbell plot
   rename(value = student_ratio) %>% # renaming student_ratio variable to prevent confusion with dataframe name
   select(indicator, country, year, value) %>%
   spread(key = year, value = value) %>%
@@ -44,15 +44,3 @@ ggsave("Week19_2019/student_teacher_ratios.png", height = 10, width = 8)
 
 
 
-student_ratio_2012 <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-05-07/student_teacher_ratio.csv") %>%
-  mutate_if(is.character, as.factor) %>%# converting characters to factors
-  filter(grepl('income', country)) %>% # selecting only those observations that include "income"
-  filter(year == 2012) 
-
-student_ratio_2017 <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-05-07/student_teacher_ratio.csv") %>%
-  mutate_if(is.character, as.factor) %>%# converting characters to factors
-  filter(grepl('income', country)) %>% # selecting only those observations that include "income"
-  filter(year == 2017) 
-
-%>%
-  filter(indicator == "Primary Education")
