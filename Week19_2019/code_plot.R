@@ -38,7 +38,7 @@ ggplot() +
        subtitle = "Some ratios increased between 2012 and 2017",
        x = "Student to Teacher Ratio (lower = fewer students per teacher)",
        y = "Country Income Level",
-       caption = "Source: https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-05-07") +
+       caption = "Source of data: https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-05-07") +
   theme_bw(base_size = 15) +
   theme(legend.position = c(0.75, 0.15)) +
   scale_color_manual(values = c("#a3c4dc", "#0e668b"), label = c("2012", "2017"))
