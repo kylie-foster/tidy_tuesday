@@ -1,7 +1,7 @@
 # Nobel Prize Winners.
 
 This week I created a Shiny app to highlight the gender gap in Nobel Prize winners, 
-including interactive line charts, bar charts and word clouds: https://kylie-foster.shinyapps.io/nobelprizes/
+including interactive line charts, bar charts and word clouds: https://kylie-foster.shinyapps.io/nobelprizes/. Note the app may take a few minutes to load.
 
 The code is provided in 'app.R'.
 
