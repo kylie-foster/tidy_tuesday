@@ -7,9 +7,9 @@ women_research <- readr::read_csv("https://raw.githubusercontent.com/rfordatasci
 
 women_research <- mutate_if(women_research, is.character, factor) # converting characters to factors
 
-#women_research <- arrange(women_research, desc(x)) group_by(Country?)
 women_research <- mutate(women_research, country = fct_reorder(country, percent_women, .fun=first))
 
+# adding images to use as symbols to the dataframe:
 women_research <- mutate(women_research, image = case_when(field == "Health sciences" ~ sample("~/Data_Science_Resources/tidy_tuesday/Week16_2019/images/health_colour.png"),
                                                            field == "Computer science, maths" ~ sample("~/Data_Science_Resources/tidy_tuesday/Week16_2019/images/computer_colour.png"),
                                                            field == "Physical sciences" ~ sample("~/Data_Science_Resources/tidy_tuesday/Week16_2019/images/physical_colour.png"),
@@ -18,7 +18,6 @@ women_research <- mutate(women_research, image = case_when(field == "Health scie
 
 scale_country <- function(..., guide = "legend") {
   sc <- discrete_scale("country", "identity", scales::identity_pal(), ..., guide = guide)
-  
   sc$super <- ScaleDiscreteIdentity
   class(sc) <- class(ScaleDiscreteIdentity)
   sc
@@ -29,9 +28,10 @@ ggplot(data = women_research, aes(y = country, x = 100*percent_women)) +
   geom_image(aes(image=image), size=.05, alpha = 0.5) +
   labs(x = "% of women among researchers with papers published 2011-15 \n(as % of total by field of study)",
        y = "",
-       caption = "Source of data: TidyTuesday Wk 16 https://github.com/rfordatascience/tidytuesday \n
+       caption = "Source of data: https://github.com/rfordatascience/tidytuesday \n
        Source of symbols: Font Awesome https://fontawesome.com/license",
-       title = "Still a man's world") +
+       title = "% of Women Among Researchers With Papers Published",
+       subtitle = "Women are far from publication parity in all fields except Health Sciences") +
   geom_vline(xintercept = 50, linetype="solid", color = "red", size = 1) +
   theme_bw()
 
