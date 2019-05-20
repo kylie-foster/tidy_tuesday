@@ -7,6 +7,9 @@ The code is provided in 'app.R'.
 
 Examples of charts from my Shiny app are shown below.
 
-https://pbs.twimg.com/media/D6vuzG0VsAEBe5M.jpg
+<img src="https://pbs.twimg.com/media/D6vuzG0VsAEBe5M.jpg" width="700"/>
 
-https://pbs.twimg.com/media/D6vuzGyVUAALyqe.jpg
+
+<img src="https://pbs.twimg.com/media/D6vuzGyVUAALyqe.jpg" width="700"/>
+
+
