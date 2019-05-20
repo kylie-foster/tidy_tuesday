@@ -12,4 +12,6 @@ Examples of charts from my Shiny app are shown below.
 
 <img src="https://pbs.twimg.com/media/D6vuzGyVUAALyqe.jpg" width="700"/>
 
+Source of data: https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-05-14
+
 
