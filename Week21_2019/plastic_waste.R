@@ -138,5 +138,5 @@ plot_mis_waste <- ggplot() +
            label = "Regions with low overall \nplastic waste have high \nlevels of mismanaged \nplastic waste") 
 
 comb <- plot_grid(plot_waste, plot_mis_waste, rel_widths = c(1, 1.35))
-ggsave("Week21_2019/plastic_waste.pdf", comb, width = 20, height = 12, units = "cm")
+ggsave("Week21_2019/plastic_waste.png", comb, width = 20, height = 12, units = "cm")
 
