@@ -4,14 +4,16 @@ library(tidyverse)
 library(tm) # for text mining
 library(wordcloud) # word-cloud generator
 library(RColorBrewer) # color palettes
+library(shinycustomloader) # for loading symbols
 
+## Importing data -----
 nobel_winners <-
   read_csv(
     "https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-05-14/nobel_winners.csv"
   ) %>%
   mutate_if(is.character, as.factor) # converting all character variables to factors
 
-# Function to prepare text to generate wordcloud:
+## Function to prepare text to generate wordcloud -----
 # (Original source of code 
 # http://www.sthda.com/english/wiki/text-mining-and-word-cloud-fundamentals-in-r-5-simple-steps-you-should-know)
 cloud_prep_function <- function(txt) {
@@ -35,15 +37,16 @@ cloud_prep_function <- function(txt) {
 }
 
 
-
-# Define UI  ----
+# Define UI  -----
 ui <- fluidPage(
-  # App title ----
+  
+  # App title -----
   titlePanel(strong("Nobel Prize Winners and Gender")),
   h2(
     "Comparison of the number of male and female Nobel Prize winners over time"
   ),
-  # First row containing slider, line plot and bar plot ----
+  
+  # First row containing slider, line plot and bar plot -----
   fluidRow(
     column(2,
            wellPanel(
@@ -57,7 +60,8 @@ ui <- fluidPage(
              h4(strong(
                "Use the slide below to explore how this changes over time."
              )),
-             # Input: Year to create mosaic plot for ----
+             
+             # Slider to select year for plots in top row -----
              sliderInput(
                inputId = "year",
                label = "Year",
@@ -71,19 +75,27 @@ ui <- fluidPage(
     ),
     column(
       4,
-      plotlyOutput( # inserting a plotly line chart
-        outputId = "line"
-      )
+      
+      # inserting a plotly line chart -----
+      withLoader(
+        plotlyOutput( 
+          outputId = "line"
+        ), 
+        type="html", 
+        loader="loader6")
+      
     ),
     column(6,
-           plotOutput( # inserting a bar chart
-             outputId = "bar"
-           )
+           
+           # inserting a bar chart with loading symbol -----
+           withLoader(plotOutput(outputId = "bar"), type="html", loader="loader6")
     )
   ),
   h2(
     "Comparison of popular words used in the award motivation for females and males"
   ),
+  
+  # Second row containing selection boxes and two word clouds -----
   fluidRow(
     column(2,
            wellPanel(
@@ -97,7 +109,7 @@ ui <- fluidPage(
                )
              ),
              selectInput('prize_cat', 'Prize Category', c("All", as.character(unique(nobel_winners$category)))
-                         ),
+             ),
              h4(
                "'Discovery', 'discoveries' and 'work' were frequently used for both females and males."
              ),
@@ -109,26 +121,40 @@ ui <- fluidPage(
     column(
       5,
       h3("Female", align = "center"),
-      plotOutput(
-        outputId = "cloud_female",
-        width = "100%",
-        height = "550px"
-      )
+      
+      # Inserting word cloud for words associated with females (including loading symbol)
+      withLoader(
+        plotOutput(
+          outputId = "cloud_female",
+          width = "100%",
+          height = "550px"
+        ), 
+        type="html", 
+        loader="loader6")
+      
     ),
     column(
       5,
       h3("Male", align = "center"),
-      plotOutput(
-        outputId = "cloud_male",
-        width = "100%",
-        height = "550px"
-      )
+      
+      # Inserting word cloud for words associated with males (including loading symbol)
+      withLoader(
+        plotOutput(
+          outputId = "cloud_male",
+          width = "100%",
+          height = "550px"
+        ), 
+        type="html", 
+        loader="loader6")
+      
     )
   )
 )
 
 # Define server logic ----
 server <- function(input, output) {
+  
+  # Bar chart -----
   output$bar <- renderPlot({
     nobel_count <-
       filter(nobel_winners,
@@ -141,7 +167,7 @@ server <- function(input, output) {
       geom_col() +
       facet_wrap( ~ gender) +
       theme_bw() +
-      theme(text = element_text(size = 30),
+      theme(text = element_text(size = 25),
             legend.position = "left") +
       labs(y = "Number of Nobel Prizes",
            x = "Prize Category",
@@ -152,7 +178,7 @@ server <- function(input, output) {
     
   })
   
-  
+  # Interactive line chart -----
   output$line <-
     renderPlotly({
       nobel_winners_group <-
@@ -184,16 +210,14 @@ server <- function(input, output) {
               all.x = TRUE,
               all.y = TRUE)
       
-      ## Use the following chart:
-      p <-
-        plot_ly(
-          x = nobel_winners_group_male$prize_year,
-          y = nobel_winners_group_male$count_prize,
-          type = "scatter",
-          mode = "markers",
-          fill = "tonexty",
-          name = 'Male'
-        ) %>%
+      p <- plot_ly(
+        x = nobel_winners_group_male$prize_year,
+        y = nobel_winners_group_male$count_prize,
+        type = "scatter",
+        mode = "markers",
+        fill = "tonexty",
+        name = 'Male'
+      ) %>%
         add_trace(
           x = nobel_winners_group_female$prize_year,
           y = nobel_winners_group_female$count_prize,
@@ -209,8 +233,7 @@ server <- function(input, output) {
       hide_legend(p)
     })
   
-  # Source of code for wordcloud:
-  # http://www.sthda.com/english/wiki/text-mining-and-word-cloud-fundamentals-in-r-5-simple-steps-you-should-know
+  # Female word clouds -----
   output$cloud_female <- renderPlot({
     if (input$prize_cat == "All") {
       txt_female <- filter(nobel_winners, gender == "Female") %>%
@@ -227,8 +250,6 @@ server <- function(input, output) {
         as.character
     }
     
-    
-    
     cloud_data_female <- cloud_prep_function(txt_female)
     
     set.seed(1234)
@@ -244,6 +265,8 @@ server <- function(input, output) {
       fixed.asp = FALSE
     )
   })
+  
+  # Male word clouds -----
   output$cloud_male <- renderPlot({
     if (input$prize_cat == "All") {
       txt_male <- filter(nobel_winners, gender == "Male") %>%
